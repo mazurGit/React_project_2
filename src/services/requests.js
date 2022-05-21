@@ -1,7 +1,5 @@
 
 class MarvelRequsest  {
-    // https://gateway.marvel.com:443/v1/public/characters?limit=9&offset=210&apikey=1c5c829de93d910b90c4d75325f90eb8
-    //https://gateway.marvel.com:443/v1/public/characters/1011005?apikey=1c5c829de93d910b90c4d75325f90eb8
 
     _apiBase = 'https://gateway.marvel.com:443/v1/public/'
     _apiKey = 'apikey=1c5c829de93d910b90c4d75325f90eb8'
@@ -26,15 +24,17 @@ class MarvelRequsest  {
     }
 
     parseDat = (char) =>{
-        const {name, description,thumbnail:{extension, path},urls} = char;
+        const {name, description,thumbnail:{extension, path},urls, id} = char;
         return {
             name,
-            description,
+            description:description.length === 0? 'There is no data in our server about this character':`${description.slice(0,213)}...`,
             thumbnail:`${path}.${extension}`,
             wiki:urls[1].url,
-            homepage:urls[0].url
+            homepage:urls[0].url,
+            id
         }
     }
 }
 
 export default MarvelRequsest;
+

@@ -13,6 +13,9 @@
         grid-template-columns: repeat(3, 200px);
         column-gap: 25px;
         row-gap: 30px;
+        .Error{
+            grid-column: 2/3;
+        }
     }
     &__item {
         width: 200px;
@@ -40,4 +43,5 @@
         text-transform: uppercase;
         color: #fff;
     }
+    
 }
