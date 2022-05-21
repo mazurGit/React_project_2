@@ -16,6 +16,10 @@
         .skeleton {
             margin-top: 30px;
         }
+        .spinner{
+            display: block;
+            margin: 0 auto;
+        }
     }
     &__basics {
         display: grid;
@@ -61,5 +65,5 @@
         line-height: 24px;
         text-align: center;
     }
-
+    
 }

@@ -30,7 +30,7 @@ class CharList  extends Component {
     createList = (chars) =>{
         return chars.map(({thumbnail, name, id}) => {
             return (
-                <li className="char__item" key = {id}>
+                <li className="char__item" key = {id} onClick ={() => this.props.onIdUpdate(id)}>
                     <img src={thumbnail} alt="abyss"/>
                     <div className='char__name'>{name}</div>
                 </li>

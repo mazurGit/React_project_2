@@ -24,14 +24,15 @@ class MarvelRequsest  {
     }
 
     parseDat = (char) =>{
-        const {name, description,thumbnail:{extension, path},urls, id} = char;
+        const {name, description,thumbnail:{extension, path},urls, id, comics} = char;
         return {
             name,
             description:description.length === 0? 'There is no data in our server about this character':`${description.slice(0,213)}...`,
             thumbnail:`${path}.${extension}`,
             wiki:urls[1].url,
             homepage:urls[0].url,
-            id
+            id,
+            comics: comics.items
         }
     }
 }
