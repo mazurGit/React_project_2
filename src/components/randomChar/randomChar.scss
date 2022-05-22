@@ -63,4 +63,10 @@
     .Error{
         grid-column: 1/3;
     }
+    .spinner{
+        grid-column: 1/3;
+        display: flex;
+        justify-self: center;
+        align-self: center;
+    }
 }

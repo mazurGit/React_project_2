@@ -110,7 +110,7 @@ class CharInfo extends Component {
 
 
 CharInfo.propTypes = {
-    selectedCharId: PropTypes.string
+    selectedCharId: PropTypes.number
 }
 
 export default CharInfo;

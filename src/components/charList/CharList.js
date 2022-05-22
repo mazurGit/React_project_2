@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import MarvelRequsest from '../../services/requests';
 import Error from '../error/error';
 import ListSkeleton from '../listSkeleton/listSkeleton';
+import CharListItem from '../charListItem/charListItem';
 
 class CharList  extends Component {
     constructor(props){
@@ -31,19 +32,6 @@ class CharList  extends Component {
         })
     }
 
-    createList = (chars) =>{
-        return chars.map(({thumbnail, name, id}) => {
-            return (
-                <li className="char__item" key = {id} onClick ={() => {
-                        this.props.onIdUpdate(id)
-                    }
-                }>
-                    <img src={thumbnail} alt="abyss"/>
-                    <div className='char__name'>{name}</div>
-                </li>
-            )
-        })
-    }
 
     onCharsLoaded = () => { 
         this.onLoadingMoreChars()
@@ -86,7 +74,7 @@ class CharList  extends Component {
                 <ul className="char__grid">
                     { loading? this.createLoadingSkeleton(): null }
                     { error? <Error style = {{gridColumn:"2/3"}}/>: null }
-                    { !(loading || error)? this.createList(chars): null }
+                    { !(loading || error)? <CharListItem chars ={chars} onIdUpdate = {this.props.onIdUpdate}/>: null }
                 </ul>
                 <button className="button button__main button__long char__button" 
                 onClick={this.onCharsLoaded} 
