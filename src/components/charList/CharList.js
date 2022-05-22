@@ -11,9 +11,12 @@ class CharList  extends Component {
         super(props)
         this.state ={
             chars:[],
-            loading:false,
+            loading:true,
             error:false,
-            charsCount:9
+            charsCount:9,
+            offset: 210,
+            btnDisable:false,
+            requestDataOver:false
         }
     }
     
@@ -30,7 +33,10 @@ class CharList  extends Component {
     createList = (chars) =>{
         return chars.map(({thumbnail, name, id}) => {
             return (
-                <li className="char__item" key = {id} onClick ={() => this.props.onIdUpdate(id)}>
+                <li className="char__item" key = {id} onClick ={() => {
+                        this.props.onIdUpdate(id)
+                    }
+                }>
                     <img src={thumbnail} alt="abyss"/>
                     <div className='char__name'>{name}</div>
                 </li>
@@ -39,23 +45,20 @@ class CharList  extends Component {
     }
 
     onCharsLoaded = () => { 
-        this.setState({loading:true})
-        this.request.getCharsData()
-        .then(chars => {
-            this.setState({
-                chars,
-                loading:false
-            })
+        this.onLoadingMoreChars()
+        this.request.getCharsData(this.state.offset)
+        .then(newChars => {
+            this.setState(({chars, offset}) => (
+                { chars: [...chars,...newChars],
+                    btnDisable:false,
+                    offset: offset + 9,
+                    requestDataOver: newChars.length < 9? true: false,
+                    loading: false
+                 }))
         })
         .catch(this.onError)
     }
 
-    onLoading = () => {
-        this.setState({
-            loading:true,
-            error:false
-        })
-    }
 
     onError = () => { 
         this.setState({
@@ -64,11 +67,19 @@ class CharList  extends Component {
         })  
     }
 
+    onLoadingMoreChars = () =>{
+        this.setState({btnDisable:true})
+    }
+
     componentDidMount = () =>{
         this.onCharsLoaded()
     }
+    
     render = () =>{
-        const{ loading, error, chars} = this.state; 
+        const{ loading, error, chars, btnDisable, requestDataOver} = this.state; 
+        const filter = btnDisable? 'grayscale(50%)': '';
+        const btnDisplay = requestDataOver? 'none': 'block'
+
         return (
             <div className="char__list">
                 <ul className="char__grid">
@@ -76,8 +87,11 @@ class CharList  extends Component {
                     { error? <Error style = {{gridColumn:"2/3"}}/>: null }
                     { !(loading || error)? this.createList(chars): null }
                 </ul>
-                <button className="button button__main button__long">
-                    <div className="inner">load more</div>
+                <button className="button button__main button__long char__button" 
+                onClick={this.onCharsLoaded} 
+                disabled={btnDisable}
+                style = {{filter:`${filter}`, display:`${btnDisplay}`}}>
+                    <div className="inner" >load more</div>
                 </button>
             </div>
         )

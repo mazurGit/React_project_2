@@ -18,8 +18,8 @@ class MarvelRequsest  {
         return this.parseDat(res.data.results[0])
     }
 
-    getCharsData = async() =>{
-        const res = await this.getData(`${this._apiBase}characters?limit=9&offset=210&${this._apiKey}`)
+    getCharsData = async(offset = 0) =>{
+        const res = await this.getData(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`)
         return res.data.results.map(item => this.parseDat(item))
     }
 
