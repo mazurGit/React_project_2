@@ -1,6 +1,7 @@
 import './charList.scss';
 
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import MarvelRequsest from '../../services/requests';
 import Error from '../error/error';
@@ -98,6 +99,8 @@ class CharList  extends Component {
     } 
 }
 
-
+CharList.propTypes = {
+    onIdUpdate:PropTypes.func
+}
 export default CharList;
 

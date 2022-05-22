@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import MarvelRequsest from '../../services/requests';
+import PropTypes from 'prop-types';
 
 import Skeleton from '../skeleton/Skeleton';
 import Error from '../error/error';
@@ -105,6 +106,11 @@ class CharInfo extends Component {
             </div>
         )
     }
+}
+
+
+CharInfo.propTypes = {
+    selectedCharId: PropTypes.string
 }
 
 export default CharInfo;
