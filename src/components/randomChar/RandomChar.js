@@ -1,93 +1,72 @@
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
 
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 
 import MarvelRequsest from '../../services/requests';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/error';
 
 
-class RandomChar extends Component{
-    constructor(props){
-        super(props)
-        this.state = {
-            char :{ 
-                name:null,
-                description:null,
-                thumbnail:null,
-                wiki:null, 
-                homepage:null
-            },
-            loading:false,
-            error:false
-        }
-    }
+const RandomChar = () =>{
+    const [char, setChar] = useState({})
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
 
-    request = new MarvelRequsest();
+    const request = new MarvelRequsest();
 
    
-    updateChar = () => {
+    const updateChar = () => {
         const randomCharId = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
-        this.onLoading()
-        this.request.getCharData(randomCharId)
+        onLoading()
+        request.getCharData(randomCharId)
         .then(res => {
-            this.onCharLoaded(res)
+            onCharLoaded(res)
         })
-        .catch(this.onError)
+        .catch(onError)
     }
 
-    componentDidMount = () =>{
-        this.updateChar()
+    useEffect(() =>{
+        updateChar()
+    }, [])
+
+    const onCharLoaded = (char) =>{
+        setChar(char)
+        setLoading(false)
     }
 
-    onCharLoaded = (char) =>{
-        this.setState({
-            char,
-            loading:false
-        })
+    const onLoading = () => { 
+        setLoading(true)
+        setError(false)
     }
 
-    onLoading = () => { 
-        this.setState({
-            loading:true,
-            error:false
-        })
+    const onError = () => {
+        setLoading(false)
+        setError(true)
     }
-
-    onError = () => {
-        this.setState({
-            loading:false,
-            error:true
-        })
-    }
-
-    render =() => {
-        const{loading, error, char} = this.state;
         
-        return (
-            <div className="randomchar">
-                <div className="randomchar__block">
-                    {loading?<Spinner/>:null}
-                    {error?<Error/>:null}
-                    {!(loading || error)? <CharDisplay char={char}/>:null}
-                </div>
-                <div className="randomchar__static">
-                    <p className="randomchar__title">
-                        Random character for today!<br/>
-                        Do you want to get to know him better?
-                    </p>
-                    <p className="randomchar__title">
-                        Or choose another one
-                    </p>
-                    <button className="button button__main" onClick={this.updateChar}>
-                        <div className="inner">try it</div>
-                    </button>
-                    <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
-                </div>
+    return (
+        <div className="randomchar">
+            <div className="randomchar__block">
+                {loading?<Spinner/>:null}
+                {error?<Error/>:null}
+                {!(loading || error)? <CharDisplay char={char}/>:null}
             </div>
-        )
-    }
+            <div className="randomchar__static">
+                <p className="randomchar__title">
+                    Random character for today!<br/>
+                    Do you want to get to know him better?
+                </p>
+                <p className="randomchar__title">
+                    Or choose another one
+                </p>
+                <button className="button button__main" onClick={updateChar}>
+                    <div className="inner">try it</div>
+                </button>
+                <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
+            </div>
+        </div>
+    )
 }
 
 

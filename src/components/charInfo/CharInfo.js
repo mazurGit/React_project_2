@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState,useEffect } from 'react';
 import MarvelRequsest from '../../services/requests';
 import PropTypes from 'prop-types';
 
@@ -8,51 +8,45 @@ import Spinner from '../spinner/Spinner';
 
 import './charInfo.scss';
 
-class CharInfo extends Component {
-    constructor(props){
-        super(props)
-        this.state = {
-            char:null,
-            loading:false,
-            error:false,
-        }
-    }
-    request = new MarvelRequsest();
+const  CharInfo = (props) => {
+    const {selectedCharId} = props
+    const [char, setChar] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
 
+    const request = new MarvelRequsest();
 
-    onComicsLoaded = (id) => {
+    useEffect(()=>{
+        onComicsLoaded(selectedCharId)
+    },[selectedCharId])
+
+    const onComicsLoaded = (id) => {
         if(!id){
             return
         } else { 
-            this.onLoading()
-            this.request.getCharData(id)
-            .then(char => this.onCharUpdate(char))
-            .catch(this.onError)
+            onLoading()
+            request.getCharData(id)
+            .then(char => onCharUpdate(char))
+            .catch(onError)
         }
     }
-    onLoading = () => { 
-        this.setState({
-            loading:true,
-            error:false
-        })
+    const onLoading = () => { 
+        setLoading(true)
+        setError(false)
     }
 
-    onCharUpdate = (char) =>{
-        this.setState({
-            loading: false,
-            char
-        })
+    const onCharUpdate = (char) =>{
+        setLoading(false)
+        setChar(char)
     }
 
-    onError = () =>{
-        this.setState({
-            loading: false,
-            error: true
-        })
+    const onError = () =>{
+        setLoading(false)
+        setError(true)
     }
 
 
-    createListContent = (char) => {
+    const createListContent = (char) => {
         const {  name, thumbnail, description, wiki, homepage, comics } = char
         return(
             <>
@@ -89,23 +83,15 @@ class CharInfo extends Component {
         )
     }
 
-    componentDidUpdate(prevProps, prevState){
-        if(prevProps.selectedCharId !== this.props.selectedCharId ){
-            this.onComicsLoaded(this.props.selectedCharId)
-        }
-        
-    }
-    render = () => {
-        const { error, loading, char } = this.state
-        return (
-            <div className="char__info">
-                { error? <Error/>: null }
-                { loading? <Spinner/>: null}
-                { !(error || loading || char)? <Skeleton/>: null }
-                { !(error || loading || !char)? this.createListContent(char): null}
-            </div>
-        )
-    }
+    
+    return (
+        <div className="char__info">
+            { error? <Error/>: null }
+            { loading? <Spinner/>: null}
+            { !(error || loading || char)? <Skeleton/>: null }
+            { !(error || loading || !char)? createListContent(char): null}
+        </div>
+    )
 }
 
 

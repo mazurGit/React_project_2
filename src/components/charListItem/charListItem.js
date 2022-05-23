@@ -1,18 +1,14 @@
-import  { Component} from 'react';
+import  { useRef } from 'react';
 
 import './charListItem.scss';
 
-class CharListItem extends Component{
+const CharListItem = (props) => {
+    const { chars, onIdUpdate } = props
+    const refs = useRef([])
 
-    elems =[]
-
-    selectItem = (elem) =>{       
-        this.elems.push(elem)
-    }
-
-    onAddActiveClass = (e) =>{
+    const onAddActiveClass = (e) =>{
         const target = e.target
-        this.elems.forEach(item =>{
+        refs.current.forEach(item =>{
             item.classList.remove('char__item_selected')
             if(item === target || target.parentNode === item){
                 item.classList.add('char__item_selected')
@@ -21,30 +17,29 @@ class CharListItem extends Component{
         })
     }
 
-    onKeySelect = (e) =>{
+    const onKeySelect = (e) =>{
         if(e.code === 'Enter'){
             e.target.click()
         }
     }
-    render = () => {
-        const { chars, onIdUpdate } = this.props
-        return chars.map(({thumbnail, name, id}) => {
-            return (
-                <li className="char__item" 
-                tabIndex={0}
-                key = {id} 
-                onClick ={(e) => {
-                    this.onAddActiveClass(e)
-                     onIdUpdate(id)
-                    }}
-                ref = {this.selectItem}
-                onKeyDown ={this.onKeySelect}>
-                    <img src={thumbnail} alt="abyss"/>
-                    <div className='char__item-name'>{name}</div>
-                </li>
-            )
-        })
-    }
+
+    
+    return chars.map(({thumbnail, name, id}, iter) => {
+        return (
+            <li className="char__item" 
+            tabIndex={0}
+            key = {id} 
+            onClick ={(e) => {
+                onAddActiveClass(e)
+                    onIdUpdate(id)
+                }}
+            ref = {(elem) => refs.current[iter] = elem}
+            onKeyDown ={onKeySelect}>
+                <img src={thumbnail} alt="abyss"/>
+                <div className='char__item-name'>{name}</div>
+            </li>
+        )
+    })
 }
 
 

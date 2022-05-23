@@ -1,6 +1,6 @@
 import './charList.scss';
 
-import { Component } from 'react';
+import {useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import MarvelRequsest from '../../services/requests';
@@ -8,87 +8,76 @@ import Error from '../error/error';
 import ListSkeleton from '../listSkeleton/listSkeleton';
 import CharListItem from '../charListItem/charListItem';
 
-class CharList  extends Component {
-    constructor(props){
-        super(props)
-        this.state ={
-            chars:[],
-            loading:true,
-            error:false,
-            charsCount:9,
-            offset: 210,
-            btnDisable:false,
-            requestDataOver:false
-        }
+const CharList  = (props) => {
+
+    const [chars, setChars] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [charsCount] = useState(9);
+    const [offset, setOffset] = useState(210);
+    const [btnDisable, setBtnDisable] = useState(false);
+    const [reqDataOver, setReqDataOver] = useState(false);
+
+    
+    const request = new MarvelRequsest();
+
+    useEffect (() =>{
+        onCharsLoaded()
+    },[])
+
+    const onLoadingMoreChars = () =>{
+        setBtnDisable(true)
     }
-    
-    
 
-    request = new MarvelRequsest();
+    const onError = () => {
+        setLoading(false)
+        setError(true)
+    }
 
-    createLoadingSkeleton = () => {
-        return new Array(this.state.charsCount).fill('').map((item, iter) => {
+    const onCharsLoaded = () => { 
+        onLoadingMoreChars()
+        request.getCharsData(offset)
+        .then(newChars => {
+            setChars(chars => [...chars,...newChars])
+            setBtnDisable (false)
+            setOffset(offset => offset + 9)
+            setReqDataOver(newChars.length < 9? true: false)
+            setLoading(false)
+            })
+        .catch(onError)
+    }
+
+    const createLoadingSkeleton = () => {
+        return new Array(charsCount).fill('').map((item, iter) => {
             return <ListSkeleton key = {iter}/>
         })
     }
 
 
-    onCharsLoaded = () => { 
-        this.onLoadingMoreChars()
-        this.request.getCharsData(this.state.offset)
-        .then(newChars => {
-            this.setState(({chars, offset}) => (
-                { chars: [...chars,...newChars],
-                    btnDisable:false,
-                    offset: offset + 9,
-                    requestDataOver: newChars.length < 9? true: false,
-                    loading: false
-                 }))
-        })
-        .catch(this.onError)
-    }
+    const filter = btnDisable? 'grayscale(50%)': '';
+    const btnDisplay = reqDataOver? 'none': 'block'
 
+    return (
+        <div className="char__list">
+            <ul className="char__grid">
+                { loading? createLoadingSkeleton(): null }
+                { error? <Error style = {{gridColumn:"2/3"}}/>: null }
+                { !(loading || error)? <CharListItem chars ={chars} onIdUpdate = {props.onIdUpdate}/>: null }
+            </ul>
+            <button className="button button__main button__long char__button" 
+            onClick={onCharsLoaded} 
+            disabled={btnDisable}
+            style = {{filter:`${filter}`, display:`${btnDisplay}`}}>
+                <div className="inner" >load more</div>
+            </button>
+        </div>
+    )
+} 
 
-    onError = () => { 
-        this.setState({
-            loading:false,
-            error:true
-        })  
-    }
-
-    onLoadingMoreChars = () =>{
-        this.setState({btnDisable:true})
-    }
-
-    componentDidMount = () =>{
-        this.onCharsLoaded()
-    }
-    
-    render = () =>{
-        const{ loading, error, chars, btnDisable, requestDataOver} = this.state; 
-        const filter = btnDisable? 'grayscale(50%)': '';
-        const btnDisplay = requestDataOver? 'none': 'block'
-
-        return (
-            <div className="char__list">
-                <ul className="char__grid">
-                    { loading? this.createLoadingSkeleton(): null }
-                    { error? <Error style = {{gridColumn:"2/3"}}/>: null }
-                    { !(loading || error)? <CharListItem chars ={chars} onIdUpdate = {this.props.onIdUpdate}/>: null }
-                </ul>
-                <button className="button button__main button__long char__button" 
-                onClick={this.onCharsLoaded} 
-                disabled={btnDisable}
-                style = {{filter:`${filter}`, display:`${btnDisplay}`}}>
-                    <div className="inner" >load more</div>
-                </button>
-            </div>
-        )
-    } 
-}
 
 CharList.propTypes = {
     onIdUpdate:PropTypes.func
 }
+
 export default CharList;
 
