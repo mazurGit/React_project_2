@@ -1,29 +1,33 @@
 
-class MarvelRequsest  {
+import { useHttp } from "../components/hooks/http.hook";
 
-    _apiBase = 'https://gateway.marvel.com:443/v1/public/'
-    _apiKey = 'apikey=1c5c829de93d910b90c4d75325f90eb8'
+const  useMarvelRequsest = () =>{
 
+    const _apiBase = 'https://gateway.marvel.com:443/v1/public/'
+    const _apiKey = 'apikey=1c5c829de93d910b90c4d75325f90eb8'
 
-    getData = async(url)=> {
-        const res = await fetch(url);
-        if(!res.ok){
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`,)
-        }
-        return await res.json()
+    const {request, error, loading, setError} = useHttp()
+
+ 
+
+    const getCharData = async (id) =>{
+            const res = await request(`${_apiBase}characters/${id}?${_apiKey}`)
+            if (res){
+                return parseDat(res.data.results[0]) 
+            }
+                
+                 
     }
 
-    getCharData = async (id) =>{
-        const res = await this.getData(`${this._apiBase}characters/${id}?${this._apiKey}`)
-        return this.parseDat(res.data.results[0])
+    const getCharsData = async(offset = 0) =>{
+            const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`)
+            if (res){
+                return res.data.results.map(item => parseDat(item)) 
+            }
+                 
     }
 
-    getCharsData = async(offset = 0) =>{
-        const res = await this.getData(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`)
-        return res.data.results.map(item => this.parseDat(item))
-    }
-
-    parseDat = (char) =>{
+    const parseDat = (char) =>{
         const {name, description,thumbnail:{extension, path},urls, id, comics} = char;
         return {
             name,
@@ -35,7 +39,8 @@ class MarvelRequsest  {
             comics: comics.items
         }
     }
+    return {getCharData, getCharsData, error, loading, setError}
 }
 
-export default MarvelRequsest;
+export default useMarvelRequsest;
 

@@ -1,5 +1,6 @@
-import { useState,useEffect } from 'react';
-import MarvelRequsest from '../../services/requests';
+import { useState, useEffect } from 'react';
+
+import useMarvelRequsest from '../../services/requests';
 import PropTypes from 'prop-types';
 
 import Skeleton from '../skeleton/Skeleton';
@@ -11,10 +12,8 @@ import './charInfo.scss';
 const  CharInfo = (props) => {
     const {selectedCharId} = props
     const [char, setChar] = useState(null)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
 
-    const request = new MarvelRequsest();
+    const {getCharData, error, loading} = useMarvelRequsest();
 
     useEffect(()=>{
         onComicsLoaded(selectedCharId)
@@ -24,25 +23,11 @@ const  CharInfo = (props) => {
         if(!id){
             return
         } else { 
-            onLoading()
-            request.getCharData(id)
-            .then(char => onCharUpdate(char))
-            .catch(onError)
+            getCharData(id)
+            .then(char => {
+                if(char) { setChar(char) }
+            })
         }
-    }
-    const onLoading = () => { 
-        setLoading(true)
-        setError(false)
-    }
-
-    const onCharUpdate = (char) =>{
-        setLoading(false)
-        setChar(char)
-    }
-
-    const onError = () =>{
-        setLoading(false)
-        setError(true)
     }
 
 
