@@ -31,5 +31,5 @@ export const useHttp = () =>{
        
     },[])
 
-    return {request, error, loading, setError}
+    return {request, error, loading, setError, setLoading}
 }

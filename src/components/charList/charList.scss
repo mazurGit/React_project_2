@@ -17,4 +17,28 @@
             grid-column: 2/3;
         }
     }
+    &__button{
+        &:disabled{
+            filter: grayscale(50%);
+        }
+    }
+    &__skeleton{
+        animation: fade 1s linear infinite alternate;
+        background-repeat: no-repeat;
+        height: 294px;
+        background-image: 
+            linear-gradient(#C4C4C4 100%, transparent 0%),
+            linear-gradient(#C4C4C4 100%, transparent 0%),
+            linear-gradient(#aaaaaa 100%, transparent 0%);
+    
+        background-size: 
+            200px 200px,
+            170px 29px,
+            200px 118px;
+    
+        background-position: 
+            top 0px left 0px,
+            top 215px left 15px,
+            top 200px left 0px;
+    }
 }

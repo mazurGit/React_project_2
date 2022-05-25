@@ -32,5 +32,28 @@
         &:hover {
             transform: translateY(-5px);
         }
+        &-skeleton{
+            animation: fade 1s linear infinite alternate;
+            background-repeat: no-repeat;
+            height: 392px;
+            background-image: 
+                linear-gradient(#C4C4C4 100%, transparent 0%),
+                linear-gradient(#C4C4C4 100%, transparent 0%);
+        
+            background-size: 
+                225px 346px,
+                225px 29px;
+        
+            background-position: 
+                top 0px left 0px,
+                top 356px left 0px,
+                
+        }
+    }
+    &__btn{
+        &:disabled{
+            filter: grayscale(50%);
+        }
     }
 }
+
