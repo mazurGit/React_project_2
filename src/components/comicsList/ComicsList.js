@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import useMarvelRequsest from '../../services/requests';
 import Error from '../error/error';
 
+import { Link } from 'react-router-dom';
+
 import './comicsList.scss';
 
 const ComicsList = () => {
@@ -12,14 +14,13 @@ const ComicsList = () => {
     const [reqDataOver, setReqDataOver] = useState(false);
     const [firstInitial, setFirstinitial] = useState(true)
 
-    const {getComicsList, loading, error, setLoading } = useMarvelRequsest();
+    const {getComicsList, loading, error } = useMarvelRequsest();
     
     useEffect(()=>{
         updateComics()
     }, [])
 
     const updateComics = (firstInitial = true) =>{
-        if(!firstInitial) {setFirstinitial(false)}
         getComicsList(offset)
         .then(newComics => {
             if(newComics){
@@ -36,15 +37,14 @@ const ComicsList = () => {
             const {title, image, price, id} = item
             return (
                 <li className="comics__item" key={id}>
-                    <a href="#" >
+                    <Link to= {`/comics/${id}`} >
                         <img src={image} alt="ultimate war" className="comics__item-img"/>
                         <div className="comics__item-name">{title}</div>
                         <div className="comics__item-price">{price}</div>
-                    </a>
+                    </Link >
                 </li>   
             )
         })
-        
     }
 
     const Skeleton = () => {

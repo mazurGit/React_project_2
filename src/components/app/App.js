@@ -1,45 +1,25 @@
-import { useState } from "react";
+import  {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 
-import AppBanner from "../appBanner/AppBanner";
-import ComicsList from "../comicsList/ComicsList";
 import AppHeader from "../appHeader/AppHeader";
-import RandomChar from "../randomChar/RandomChar";
-import CharList from "../charList/CharList";
-import CharInfo from "../charInfo/CharInfo";
-import ErrorBoundary from "../errorBoundary/errorBoundary";
+import { MainPage, ComicsPage, Page404, SingleComic } from "../pages/index";
 
-import decoration from '../../resources/img/vision.png';
 
 const App = () => {
-    const [selectedCharId, setId] = useState(null)
-
-
-    const onIdUpdate = (Id) => { 
-        setId( Id )
-    }
-
     return (
-        <div className="app">
-            <AppHeader/>
-            {/* <main>
-                <ErrorBoundary>
-                    <RandomChar/>
-                </ErrorBoundary>
-                <div className="char__content">
-                    <ErrorBoundary>
-                        <CharList onIdUpdate = {onIdUpdate}/>
-                    </ErrorBoundary>
-                    <ErrorBoundary> 
-                        <CharInfo selectedCharId = {selectedCharId}/>
-                    </ErrorBoundary>
-                </div>
-                <img className="bg-decoration" src={decoration} alt="vision"/>
-            </main> */}
-            <main>
-                <AppBanner/>
-                <ComicsList/>
-            </main>
-        </div>
+        <Router>
+            <div className="app">
+                <AppHeader/>
+                <main>
+                    <Routes>
+                        <Route path="/" element={<MainPage/>}/>
+                        <Route path="/comics" element={<ComicsPage/>}/>
+                        <Route path="comics/:comicId" element ={<SingleComic/>}/>
+                        <Route path="*" element={<Page404/>}/>
+                    </Routes>
+                </main>
+            </div>
+        </Router>
+        
     )
 }
 

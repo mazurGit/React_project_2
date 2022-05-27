@@ -30,9 +30,10 @@ const CharList  = (props) => {
                 setChars(chars => [...chars,...newChars])
                 setOffset(offset => offset + 9)
                 setReqDataOver(newChars.length < 9? true: false)
-            } 
+            } else {
+                setFirstinitial(false)
+            }
         })
-        if(!firstInitial){setFirstinitial(false)}
     }
 
     const createLoadingSkeleton = () => {
@@ -48,9 +49,10 @@ const CharList  = (props) => {
 
     return (
         <div className="char__list">
+            { error? <Error/>: null }
             <ul className="char__grid">
                 { firstInitial? createLoadingSkeleton(): null }
-                { error? <Error style = {{gridColumn:"2/3"}}/>: null }
+                
                 { <CharListItem chars ={chars} onIdUpdate = {props.onIdUpdate}/> }
             </ul>
             <button className="button button__main button__long char__button" 

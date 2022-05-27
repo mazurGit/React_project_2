@@ -5,6 +5,10 @@ export const useHttp = () =>{
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
 
+    const resetError = () => { 
+        setError(null)
+    }
+
     const request = useCallback(async (url, method = 'GET',body =null, headers = {'Content-Type':'application/json'})=>{
      
         setLoading(true);
@@ -31,5 +35,5 @@ export const useHttp = () =>{
        
     },[])
 
-    return {request, error, loading, setError, setLoading}
+    return {request, error, loading, resetError}
 }

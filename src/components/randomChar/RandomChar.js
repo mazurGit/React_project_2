@@ -12,11 +12,11 @@ const RandomChar = () =>{
     const [char, setChar] = useState({})
 
 
-    const {getCharData, error, loading, setError} = useMarvelRequsest();
+    const {getCharData, error, loading, resetError} = useMarvelRequsest();
 
    
     const updateChar = () => {
-        setError(false)
+        resetError()
         const randomCharId = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
         getCharData(randomCharId)
         .then(res => {

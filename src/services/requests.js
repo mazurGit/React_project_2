@@ -6,14 +6,20 @@ const  useMarvelRequsest = () =>{
     const _apiBase = 'https://gateway.marvel.com:443/v1/public/'
     const _apiKey = 'apikey=1c5c829de93d910b90c4d75325f90eb8'
 
-    const {request, error, loading, setError, setLoading} = useHttp()
+    const {request, error, loading, resetError} = useHttp()
 
  
     const getComicsList = async(offset) => {
-        // comics?format=magazine&limit=8&apikey=1c5c829de93d910b90c4d75325f90eb8
-        const res = await request (`${_apiBase}comics?format=magazine&limit=8&offset=${offset}&${_apiKey}`)
+        const res = await request (`${_apiBase}comics?orderBy=issueNumber&limit=8&offset=${offset}&${_apiKey}`)
         if(res){
-            return res.data.results.map(item => parseComicsData(item))
+            return res.data.results.map(item => parseComicsData(item, true))
+        }
+    }
+
+    const getSingleComic = async(id) => {
+        const res = await request(`${_apiBase}comics/${id}?${_apiKey}`);
+        if(res){
+            return parseComicsData(res.data.results[0])
         }
     }
 
@@ -48,15 +54,18 @@ const  useMarvelRequsest = () =>{
     }
 
     const parseComicsData = (comics) => {
-        const {id, title, prices, thumbnail:{path, extension}} = comics;
+        const {id, title, prices, thumbnail:{path, extension}, description, pageCount, textObjects:{language}} = comics;
         return{
             id,
             title,
-            price:prices[0].price,
-            image: `${path}.${extension}`
+            price: prices[0].price == 0? 'Free': `${prices[0].price}$`,
+            image: `${path}.${extension}`,
+            description: description || 'There is no description',
+            pageCount: pageCount? `${pageCount} p.`: 'No information about the number of pages',
+            language:language || 'en-us'
         }
     }
-    return {getCharData, getCharsData, getComicsList, error, loading, setError, setLoading}
+    return {getCharData, getCharsData, getComicsList, getSingleComic, error, loading, resetError}
 }
 
 export default useMarvelRequsest;
