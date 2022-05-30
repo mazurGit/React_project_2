@@ -10,7 +10,7 @@ import CharListItem from '../charListItem/charListItem';
 const CharList  = (props) => {
     const [chars, setChars] = useState([]);
     const [charsQty] = useState(9);
-    const [offset, setOffset] = useState(210);
+    const [offset, setOffset] = useState(localStorage.getItem('charsOffset')? +localStorage.getItem('charsOffset'):210);
     const [firstInitial, setFirstinitial] = useState(true)
     const [reqDataOver, setReqDataOver] = useState(false);
 
@@ -18,7 +18,12 @@ const CharList  = (props) => {
     
 
     useEffect (() =>{
-        onCharsLoaded()
+        if(localStorage.getItem('charList')){
+            setFirstinitial(false)
+            setChars(JSON.parse(localStorage.getItem('charList')))
+        } else {
+            onCharsLoaded()
+        }
     },[])
 
 
@@ -28,8 +33,10 @@ const CharList  = (props) => {
             if(newChars) {
                 setFirstinitial(false)
                 setChars(chars => [...chars,...newChars])
-                setOffset(offset => offset + 9)
-                setReqDataOver(newChars.length < 9? true: false)
+                setOffset(offset => offset + charsQty)
+                setReqDataOver(newChars.length < charsQty? true: false)
+                localStorage.setItem('charList',JSON.stringify([...chars,...newChars]))
+                localStorage.setItem('charsOffset',`${offset + charsQty}`)
             } else {
                 setFirstinitial(false)
             }

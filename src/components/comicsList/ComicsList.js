@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom';
 import './comicsList.scss';
 
 const ComicsList = () => {
-    const [comics,setComisc] = useState([]);
-    const [offset, setOffset] = useState(0);
+    const [comics,setComics] = useState([]);
+    const [offset, setOffset] = useState(localStorage.getItem('comicsOffset')? +localStorage.getItem('comicsOffset'): 0);
     const [comicsQty] = useState(8);
     const [reqDataOver, setReqDataOver] = useState(false);
     const [firstInitial, setFirstinitial] = useState(true)
@@ -17,26 +17,34 @@ const ComicsList = () => {
     const {getComicsList, loading, error } = useMarvelRequsest();
     
     useEffect(()=>{
-        updateComics()
+        if(localStorage.getItem('comicsList')){
+            setFirstinitial(false)
+            setComics(JSON.parse(localStorage.getItem('comicsList')))
+        } else {
+            updateComics()
+        }
     }, [])
 
-    const updateComics = (firstInitial = true) =>{
+    const updateComics = () =>{
         getComicsList(offset)
         .then(newComics => {
             if(newComics){
                 if (newComics.length < comicsQty) { setReqDataOver(true) }
-                setComisc(comics => [...comics,...newComics])
+                setComics(comics => [...comics,...newComics])
                 setOffset(offset => offset + comicsQty)
                 setFirstinitial(false)
+                localStorage.setItem('comicsList',JSON.stringify([...comics,...newComics]))
+                localStorage.setItem('comicsOffset',`${offset + comicsQty}`)
             }
         })
     }
 
     const items = (comics) => {
-        return comics.map(item => {
+        return comics.map( (item, iter) => {
             const {title, image, price, id} = item
             return (
-                <li className="comics__item" key={id}>
+                //duplicate of id possible , use iterater instead
+                <li className="comics__item" key={iter}>                
                     <Link to= {`/comics/${id}`} >
                         <img src={image} alt="ultimate war" className="comics__item-img"/>
                         <div className="comics__item-name">{title}</div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import useMarvelRequsest from '../../services/requests';
 import PropTypes from 'prop-types';
@@ -56,9 +57,10 @@ const  CharInfo = (props) => {
                 <ul className="char__comics-list">
                     {
                         comics.map(({resourceURI, name}, iter) =>{
+                            const comicId = resourceURI.slice(-5)
                         return (
                             <li className="char__comics-item" key = {iter}>
-                                <a href={resourceURI}>{name}</a>
+                                <Link to={`comics/${comicId}`}>{name}</Link>
                             </li>
                         )
                         }) 
@@ -85,3 +87,6 @@ CharInfo.propTypes = {
 }
 
 export default CharInfo;
+
+
+

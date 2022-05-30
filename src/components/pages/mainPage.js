@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
@@ -8,11 +8,19 @@ import ErrorBoundary from "../errorBoundary/errorBoundary";
 import decoration from '../../resources/img/vision.png';
 
 const MainPage = () => {
+    
     const [selectedCharId, setId] = useState(null)
 
+    useEffect(() =>{
+    if(localStorage.getItem('charId')){
+        setId(+localStorage.getItem('charId'))
+    }
+    }, [])
 
-    const onIdUpdate = (Id) => { 
-        setId( Id )
+
+    const onIdUpdate = (id) => { 
+        localStorage.setItem('charId',`${id}`)
+        setId( id )
     }
     return (
         <>

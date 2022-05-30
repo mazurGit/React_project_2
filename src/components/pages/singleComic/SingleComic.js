@@ -44,7 +44,11 @@ const SingleComic = () => {
                     <p className="single-comic__descr">{language}</p>
                     <div className="single-comic__price">{price}</div>
                 </div>
-                <Link to= "/comics" className='single-comic__back'>Back to all</Link>
+                <div className='single-comic__links'>
+                    <Link to= "/comics" className='single-comic__back'>Back to comics page</Link>
+                    <Link to= "/" className='single-comic__back'>Back to main page</Link>
+                </div>
+               
             </div>      
         )
     }
@@ -52,10 +56,9 @@ const SingleComic = () => {
     return (
         <>
             <AppBanner/>
-            
             {error? <Error/>: null}
             {loading? spinner: null}
-            { !(loading && error)? <DynamicElem comic ={comic}/>: null} 
+            { !(loading || error)? <DynamicElem comic ={comic}/>: null} 
         </>                  
     )
 }
